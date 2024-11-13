@@ -113,4 +113,36 @@ class AdminController extends Controller
     {
         return view('admin.category-add');
     }
+
+    public function category_store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'slug' => 'required|unique:categories,slug',
+            'image' => 'mimes:png,jpg,jpeg|max:2048'
+        ]);
+
+        $category = new Category();
+        $category->name = $request->name;
+        $category->slug = Str::slug($request->name);
+        $image = $request->file('image');
+        $file_extension = $request->file('image')->extension();
+        $file_name = Carbon::now()->timestamp . '.' . $file_extension;
+        $category->image = $file_name;
+        $category->save();
+
+        $this->GenerateCategoryThumbnailsImage($image, $file_name);
+
+        return redirect()->route('admin.categories')->with('status', 'Category has been added successfully!');
+    }
+
+    public function GenerateCategoryThumbnailsImage($image, $imageName)
+    {
+        $destinationPath = public_path('uploads/categories');
+        $img = Image::make($image->path());
+
+        $img->resize(124, 124, function ($constraint) {
+            $constraint->aspectRatio();
+        })->save($destinationPath . '/' . $imageName);
+    }
 }
