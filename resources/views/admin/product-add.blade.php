@@ -210,29 +210,36 @@
 @push ('scripts')
 <script>
     $(function() {
+        // Hàm chuyển đổi chuỗi thành slug
+        function stringToSlug(Text) {
+            return Text.toLowerCase()
+                .replace(/[^\w ]+/g, "")   // Xóa các ký tự đặc biệt
+                .replace(/ +/g, "-");      // Thay khoảng trắng bằng dấu gạch ngang
+        }
+
+        // Hiển thị preview cho ảnh chính
         $("#myFile").on("change", function(e) {
-            const photoInp = $("#myFile");
             const file = this.files[0];
             if (file) {
                 $("#imgpreview img").attr("src", URL.createObjectURL(file));
                 $("#imgpreview").show();
             }
-    });
+        });
 
-    $("#gFile").on("change", function(e) {
-        const photoInp = $("#gFile");
-        const gphotos = this.files;
-        $.each(gphotos, function(key, val) {
-            $("#galUpload").prepend(
-                `<div class="item gitems"><img src="${URL.createObjectURL(val)}" /></div>`
-            );
+        // Hiển thị preview cho gallery images
+        $("#gFile").on("change", function(e) {
+            const gphotos = this.files;
+            $.each(gphotos, function(key, val) {
+                $("#galUpload").prepend(
+                    `<div class="item gitems"><img src="${URL.createObjectURL(val)}" /></div>`
+                );
+            });
+        });
+
+        // Tự động cập nhật slug khi nhập tên
+        $("input[name='name']").on("input", function() {
+            $("input[name='slug']").val(stringToSlug($(this).val()));
         });
     });
-
-    $("input[name='name']").on("change", function() {
-        $("input[name='slug']").val(stringToSlug($(this).val()));
-    });
-});
-
 </script>
 @endpush
