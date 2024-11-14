@@ -266,9 +266,9 @@ class AdminController extends Controller
                     $counter = $counter + 1;
                 }
             }
-            $gallery_iamges = implode(',', $gallery_arr);
+            $gallery_images = implode(',', $gallery_arr);
         }
-        $product->images = $gallery_iamges;
+        $product->images = $gallery_images;
         $product->save();
         return redirect()->route('admin.products')->with('status', 'Product has been added successfully!');
     }

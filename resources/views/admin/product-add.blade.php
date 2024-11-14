@@ -223,13 +223,12 @@
         const photoInp = $("#gFile");
         const gphotos = this.files;
         $.each(gphotos, function(key, val) {
-            $("#galupload").prepend(
+            $("#galUpload").prepend(
                 `<div class="item gitems"><img src="${URL.createObjectURL(val)}" /></div>`
             );
         });
     });
 
-    // Generate slug from name input
     $("input[name='name']").on("change", function() {
         $("input[name='slug']").val(stringToSlug($(this).val()));
     });
