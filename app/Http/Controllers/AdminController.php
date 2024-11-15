@@ -450,9 +450,8 @@ class AdminController extends Controller
                 }
             }
             $gallery_images = implode(',', $gallery_arr);
+            $product->images = $gallery_images;
         }
-
-        $product->images = $gallery_images;
         $product->save();
         return redirect()->route('admin.products')->with('status', 'Product has been updated successfully!');
     }
