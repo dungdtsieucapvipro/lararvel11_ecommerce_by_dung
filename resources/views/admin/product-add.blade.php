@@ -121,17 +121,16 @@
                 <fieldset>
                     <div class="body-title mb-10">Upload Gallery Images</div>
                     <div class="upload-image mb-16">
-                        <!-- <div class="item">
-        <img src="images/upload/upload-1.png" alt="">
-    </div>                                                 -->
+                        <div class="item" id="imgspreview" style="display:none">
+                            
+                        </div>
                         <div id="galUpload" class="item up-load">
                             <label class="uploadfile" for="gFile">
                                 <span class="icon">
                                     <i class="icon-upload-cloud"></i>
                                 </span>
-                                <span class="text-tiny">Drop your images here or select <span
-                                        class="tf-color">click to browse</span></span>
-                                <input type="file" id="gFile" name="images[]" accept="image/*" multiple="">
+                                <span class="text-tiny">Drop your images here or select <span class="tf-color">click to browse</span></span>
+                                <input onchange="handlerChangeFile(event)" type="file" id="gFile" name="images[]" accept="image/*"  multiple="">
                             </label>
                         </div>
                     </div>
@@ -208,38 +207,41 @@
 </div>
 @endsection
 @push ('scripts')
-<script>
-    $(function() {
-        // Hàm chuyển đổi chuỗi thành slug
-        function stringToSlug(Text) {
-            return Text.toLowerCase()
-                .replace(/[^\w ]+/g, "")   // Xóa các ký tự đặc biệt
-                .replace(/ +/g, "-");      // Thay khoảng trắng bằng dấu gạch ngang
-        }
+    <script>
+        $(function() {
 
-        // Hiển thị preview cho ảnh chính
-        $("#myFile").on("change", function(e) {
-            const file = this.files[0];
-            if (file) {
-                $("#imgpreview img").attr("src", URL.createObjectURL(file));
-                $("#imgpreview").show();
+            // Hiển thị preview cho ảnh chính
+            $("#myFile").on("change", function(e) {
+                const photoInp = $("#myFile");
+                const file = this.files[0];
+                if (file) {
+                    $("#imgpreview img").attr("src", URL.createObjectURL(file));
+                    $("#imgpreview").show();
+                }
+            });
+
+            // Hiển thị preview cho gallery images
+            $("#gFile").on("change", function(e) {
+                const photoInp = $("#gFile");
+                const gphotos = this.files;
+                $.each(gphotos, function(key, val) {
+                    $("#galUpload").prepend(
+                        `<div class="item gitems"><img src="${URL.createObjectURL(val)}" /></div>`
+                    );
+                });
+            });
+
+            // Tự động cập nhật slug khi nhập tên
+            $("input[name='name']").on("input", function() {
+                $("input[name='slug']").val(stringToSlug($(this).val()));
+            });
+
+            // Hàm chuyển đổi chuỗi thành slug
+            function stringToSlug(Text) {
+                return Text.toLowerCase()
+                    .replace(/[^\w ]+/g, "")   // Xóa các ký tự đặc biệt
+                    .replace(/ +/g, "-");      // Thay khoảng trắng bằng dấu gạch ngang
             }
         });
-
-        // Hiển thị preview cho gallery images
-        $("#gFile").on("change", function(e) {
-            const gphotos = this.files;
-            $.each(gphotos, function(key, val) {
-                $("#galUpload").prepend(
-                    `<div class="item gitems"><img src="${URL.createObjectURL(val)}" /></div>`
-                );
-            });
-        });
-
-        // Tự động cập nhật slug khi nhập tên
-        $("input[name='name']").on("input", function() {
-            $("input[name='slug']").val(stringToSlug($(this).val()));
-        });
-    });
-</script>
+    </script>
 @endpush
