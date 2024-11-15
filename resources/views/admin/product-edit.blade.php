@@ -28,8 +28,10 @@
             </ul>
         </div>
         <!-- form-edit-product -->
-        <form class="tf-section-2 form-add-product" method="POST" enctype="multipart/form-data" action="">
+        <form class="tf-section-2 form-add-product" method="POST" enctype="multipart/form-data" action="{{ route('admin.product.update') }}">
             @csrf
+            @method('PUT')
+            <input type="hidden" name="id" value="{{$product->id}}" />
             <div class="wg-box">
                 <fieldset class="name">
                     <div class="body-title mb-10">Product name <span class="tf-color-1">*</span>
@@ -138,6 +140,7 @@
                         </div>
                     </div>
                 </fieldset>
+                
                 @error('images') <span class="alert alert-danger text-center">{{$message}}</span> @enderror
 
                 <div class="cols gap22">
@@ -200,7 +203,7 @@
 
                 </div>
                 <div class="cols gap10">
-                    <button class="tf-button w-full" type="submit">Edit product</button>
+                    <button class="tf-button w-full" type="submit">Update product</button>
                 </div>
             </div>
         </form>
