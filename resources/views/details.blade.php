@@ -398,7 +398,7 @@
 
               <div class="pc__info position-relative">
                 <p class="pc__category">{{$rproduct->category->name}}</p>
-                <h6 class="pc__title"><a href="{{route('shop.product.details',['product_slug'=>$product->slug])}}">{{$product->name}}</a></h6>
+                <h6 class="pc__title"><a href="{{route('shop.product.details',['product_slug'=>$product->slug])}}">{{$rproduct->name}}</a></h6>
                 <div class="product-card__price d-flex">
                   <span class="money price">
                     @if($product->sale_price)
