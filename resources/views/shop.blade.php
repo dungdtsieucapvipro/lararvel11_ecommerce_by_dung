@@ -152,7 +152,9 @@
                     @foreach ($brands as $brand)
                       <li class="list-item">
                         <span class="menu-link py-1">
-                          <input type="checkbox" name="brands" value="{{$brand->id}}" class="chk-brand">
+                          <input type="checkbox" name="brands" value="{{ $brand->id }}" class="chk-brand"
+                              @if(in_array($brand->id, explode(',', $f_brands))) checked="checked" @endif>
+
                             {{$brand->name}}
                         </span>
                         <span class="text-righ float-end">
@@ -429,6 +431,7 @@
     <input type="hidden" name="page" value="{{$products->currentPage()}}">
     <input type="hidden" name="size" id="size" value="{{$size}}" />
     <input type="hidden" name="order" id="order" value="{{$order}}" />
+    <input type="hidden" name="brands" id="hdnBrands">
   </form>
 @endsection
 
@@ -442,6 +445,20 @@
 
       $("#orderby").on("change",function(){
         $("#order").val($("#orderby option:selected").val());
+        $("#frmfilter").submit();
+      });
+
+      $("input[name='brands']").on("change",function(){
+        var brands = "";
+        $("input[name='brands']:checked").each(function(){
+          if(brands =="") {
+            brands += $(this).val();
+          }
+          else {
+            brands +="," + $(this).val();
+          }
+        });
+        $('#hdnBrands').val(brands);
         $("#frmfilter").submit();
       });
     });
