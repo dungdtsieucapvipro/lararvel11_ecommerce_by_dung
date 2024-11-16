@@ -21,6 +21,8 @@ Route::get('/shop/{product_slug}', [ShopController::class, 'product_details'])->
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add_to_cart'])->name('cart.add');
+Route::put('/cart/increase-quantity/{rowId}', [CartController::class, 'increase_cart_quantity'])->name('cart.qty.increase');
+Route::put('/cart/decrease-quantity/{rowId}', [CartController::class, 'decrease_cart_quantity'])->name('cart.qty.decrease');
 
 
 
@@ -34,7 +36,7 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin/brands', [AdminController::class, 'brands'])->name('admin.brands');
     Route::get('/admin/brand/add', [AdminController::class, 'add_brand'])->name('admin.brand.add');
-    Route::post('/admin/brand/store', [AdminController::class, "brand_store"])->name('admin.brand.store');
+    Route::post('/admin/brand/store', [AdminController::class, 'brand_store'])->name('admin.brand.store');
     Route::get('/admin/brand/{id}/edit', [AdminController::class, 'brand_edit'])->name('admin.brand.edit');
     Route::put('/admin/brand/update', [AdminController::class, 'brand_update'])->name('admin.brand.update');
     Route::delete('/admin/brand/{id}/delete', [AdminController::class, 'brand_delete'])->name('admin.brand.delete');
