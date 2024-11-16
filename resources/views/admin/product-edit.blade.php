@@ -57,7 +57,7 @@
                             <select class="" name="category_id">
                                 <option>Choose category</option>
                                 @foreach ($categories as $category) 
-                                    <option value="{{$category->id}}" {{$product->category_id == $category->id ? "seletecd":""}}>{{$category->name}}</option>
+                                    <option value="{{$category->id}}" {{$product->category_id == $category->id ? "selected":""}}>{{$category->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -71,7 +71,7 @@
                             <select class="" name="brand_id">
                                 <option>Choose Brand</option>
                                 @foreach ($brands as $brand) 
-                                    <option value="{{$brand->id}}" {{$product->brand_id == $brand->id ? "seletecd":""}}>{{$brand->name}}</option>
+                                    <option value="{{$brand->id}}" {{$product->brand_id == $brand->id ? "selected":""}}>{{$brand->name}}</option>
                                 @endforeach
                             </select>
                         </div>
