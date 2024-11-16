@@ -455,9 +455,25 @@
 
         <div class="divider"></div>
         <div class="flex items-center justify-between flex-wrap gap10 wg-pagination">
-            {{$products->links('pagination::bootstrap-5')}}
+            {{$products->withQueryString()->links('pagination::bootstrap-5')}}
         </div>
       </div>
     </section>
   </main>
+
+  <form id="frmfilter" method="GET" action="{{route('shop.index')}}">
+    <input type="hidden" name="page" value="{{$products->currentPage()}}">
+    <input type="hidden" name="size" id="size" value="{{$size}}">
+  </form>
 @endsection
+
+@push('scripts')
+  <script>
+    $(function(){
+      $("#pagesize").on("change",function(){
+        $("#size").val($("#pagesize option:selected").val());
+        $("#frmfilter").submit();
+      })
+    });
+  </script>
+@endpush
