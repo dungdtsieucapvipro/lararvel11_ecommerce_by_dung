@@ -6,6 +6,7 @@
       <h2 class="page-title">Wishlist</h2>
       
       <div class="shopping-cart">
+        @if (Cart::instance('wishlist')->content()->count() > 0)
         <div class="cart-table__wrapper">
           <table class="cart-table">
             <thead>
@@ -42,10 +43,10 @@
                         {{$item->qty}}    
                     </td>
                     <td>
-                        <form method="POST" action="{{route('wishlist.item.remove', ['rowId'=>$item->rowId])}}" id="remove-item-{{$item->rowId}}">
+                        <form method="POST" action="{{route('wishlist.item.remove', ['rowId'=>$item->rowId])}}" id="remove-item-{{$item->id}}">
                             @csrf
                             @method('DELETE')
-                            <a href="javascript:void(0)" class="remove-cart" onclick="document.getElementById('remove-item-{{$item->rowId}}').submit();">
+                            <a href="javascript:void(0)" class="remove-cart" onclick="document.getElementById('remove-item-{{$item->id}}').submit();">
                                 <svg width="10" height="10" viewBox="0 0 10 10" fill="#767676" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M0.259435 8.85506L9.11449 0L10 0.885506L1.14494 9.74056L0.259435 8.85506Z" />
                                     <path d="M0.885506 0.0889838L9.74057 8.94404L8.85506 9.82955L0 0.97449L0.885506 0.0889838Z" />
@@ -60,10 +61,21 @@
             </tbody>
           </table>
           <div class="cart-table-footer">
-            
-            <button class="btn btn-light">UPDATE CART</button>
+            <form method="POST" action="{{route('wishlist.items.clear')}}"">
+                @csrf
+                @method('DELETE')
+                    <button type="submit" class="btn btn-light">CLEAR WISHLIST</button>
+            </form>
           </div>
         </div>
+        @else
+            <div class="row">
+                <div class="col-md-12">
+                    <p>No item found in your wishlist</p>
+                    <a href="{{route('shop.index')}}" class="btn btn-info">Wish Now</a>
+                </div>
+            </div>
+        @endif
         
       </div>
     </section>
