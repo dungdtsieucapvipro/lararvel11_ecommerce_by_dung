@@ -293,7 +293,7 @@
           <div class="breadcrumb mb-0 d-none d-md-block flex-grow-1">
             <a href="{{route('home.index')}}" class="menu-link menu-link_us-s text-uppercase fw-medium">Home</a>
             <span class="breadcrumb-separator menu-link fw-medium ps-1 pe-1">/</span>
-            <a href="#" class="menu-link menu-link_us-s text-uppercase fw-medium">The Shop</a>
+            <a href="{{route('shop.index')}}" class="menu-link menu-link_us-s text-uppercase fw-medium">The Shop</a>
           </div>
 
           <div class="shop-acs d-flex align-items-center justify-content-between justify-content-md-end flex-grow-1" >
