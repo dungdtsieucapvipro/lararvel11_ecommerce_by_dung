@@ -83,7 +83,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="menu-item has-children">
+                                <li class="menu-item has-children brand-item">
                                     <a href="javascript:void(0);" class="menu-item-button">
                                         <div class="icon"><i class="icon-layers"></i></div>
                                         <div class="text">Brand</div>
@@ -101,7 +101,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="menu-item has-children">
+                                <li class="menu-item has-children category-item">
                                     <a href="javascript:void(0);" class="menu-item-button">
                                         <div class="icon"><i class="icon-layers"></i></div>
                                         <div class="text">Category</div>
@@ -164,15 +164,16 @@
                                         <div class="text">Settings</div>
                                     </a>
                                 </li>
-                                <li class="menu-item">
+                                <li class="menu-item logout-item">
                                     <form method="POST" action="{{route('logout')}}" id="logout-form">
                                         @csrf
-                                    <a href="{{route('logout')}}" class="" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                                        <div class="icon"><i class="icon-settings"></i></div>
-                                        <div class="text">Logout</div>
-                                    </a>
+                                        <a href="{{route('logout')}}" class="menu-link menu-link_us-s" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                            <div class="icon"><i class="icon-log-out"></i></div>
+                                            <div class="text">Logout</div>
+                                        </a>
                                     </form>
                                 </li>
+                                
                             </ul>
                         </div>
                     </div>
