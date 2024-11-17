@@ -54,6 +54,13 @@
                                         <div class="text">Dashboard</div>
                                     </a>
                                 </li>
+                                <!-- Nút Back to Home -->
+                                <li class="menu-item">
+                                    <a href="{{ route('home.index') }}" class="">
+                                        <div class="icon"><i class="icon-home"></i></div>
+                                        <div class="text">Back to Home</div>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <div class="center-item">
