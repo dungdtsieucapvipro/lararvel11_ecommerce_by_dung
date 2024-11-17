@@ -183,16 +183,16 @@
             <div id="accordion-filter-price" class="accordion-collapse collapse show border-0"
               aria-labelledby="accordion-heading-price" data-bs-parent="#price-filters">
               <input class="price-range-slider" type="text" name="price_range" value="" data-slider-min="1"
-                data-slider-max="500" data-slider-step="5" data-slider-value="[{{$min_price}},{{$max_price}}]" data-currency="$" />
+                  data-slider-max="{{ $original_max_price }}" data-slider-step="5" data-slider-value="[{{$min_price}},{{$max_price}}]" data-currency="$" />
               <div class="price-range__info d-flex align-items-center mt-2">
-                <div class="me-auto">
-                  <span class="text-secondary">Min Price: </span>
-                  <span class="price-range__min">$1</span>
-                </div>
-                <div>
-                  <span class="text-secondary">Max Price: </span>
-                  <span class="price-range__max">$500</span>
-                </div>
+                  <div class="me-auto">
+                      <span class="text-secondary">Min Price: </span>
+                      <span class="price-range__min">$1</span>
+                  </div>
+                  <div>
+                      <span class="text-secondary">Max Price: </span>
+                      <span class="price-range__max">${{$original_max_price}}</span>
+                  </div>
               </div>
             </div>
           </div>
@@ -476,13 +476,13 @@
         $("#frmfilter").submit();
       });
 
-      $("[name='price_range']").on("change",function(){
+      $("[name='price_range']").on("change", function(){
           var min = $(this).val().split(',')[0];
           var max = $(this).val().split(',')[1];
           $("#hdnMinPrice").val(min);
           $("#hdnMaxPrice").val(max);
           setTimeout(() => {
-            $("#frmfilter").submit();
+              $("#frmfilter").submit();
           }, 2000); 
       });
     });
