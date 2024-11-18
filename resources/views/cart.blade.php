@@ -1,5 +1,10 @@
 @extends('layouts.app')
 @section('content')
+<style>
+  .text-success{
+    color: #278c04 !important;
+  }
+</style>
 <main class="pt-90">
     <div class="mb-4 pb-4"></div>
     <section class="shop-checkout container">
@@ -122,6 +127,37 @@
           <div class="sticky-content">
             <div class="shopping-cart__totals">
               <h3>Cart Totals</h3>
+              @if(Session::has('discounts'))
+              <table class="cart-totals">
+                <tbody>
+                  <tr>
+                    <th>Subtotal</th>
+                    <td>${{Cart::instance('cart')->subtotal()}}</td>
+                  </tr>
+                  <tr>
+                    <th>Discount {{Session::get('coupon')['code']}}</th>
+                    <td>-${{Session::get('discounts')['discount']}}</td>
+                  </tr>
+                  <tr>
+                    <th>Subtotal After Discount</th>
+                    <td>${{Session::get('discounts')['subtotal']}}</td>
+                  </tr>
+                  <tr>
+                    <th>Shipping</th>
+                    <td>Free</td>
+                  </tr>
+                  <tr>
+                    <th>VAT</th>
+                    <td>${{Session::get('discounts')['tax']}}</td>
+                  </tr>
+                  <tr>
+                    <th>Total</th>
+                    <td>${{Session::get('discounts')['total']}}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              @else
               <table class="cart-totals">
                 <tbody>
                   <tr>
@@ -142,6 +178,7 @@
                   </tr>
                 </tbody>
               </table>
+              @endif
             </div>
             <div class="mobile_fixed-btn_wrapper">
               <div class="button-wrapper container">
