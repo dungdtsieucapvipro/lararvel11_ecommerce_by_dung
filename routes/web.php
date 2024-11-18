@@ -41,6 +41,7 @@ Route::post('/wishlist/move-to-cart/{rowId}', [WishlistController::class, 'move_
 
 
 
+Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 
 
 
