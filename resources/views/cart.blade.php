@@ -98,16 +98,24 @@
             </tbody>
           </table>
           <div class="cart-table-footer">
-            <form action="#" class="position-relative bg-body">
-              <input class="form-control" type="text" name="coupon_code" placeholder="Coupon Code">
-              <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit"
-                value="APPLY COUPON">
+            <form action="{{route('cart.coupon.apply')}}" method="POST" class="position-relative bg-body">
+              @csrf                        
+              <input class="form-control" type="text" name="coupon_code" placeholder="Coupon Code" value="@if(Session::has('coupon')) {{Session::get('coupon')['code']}} Applied! @endif">
+              <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit" value="APPLY COUPON">
             </form>
+
             <form action="{{route('cart.empty')}}" method="POST">
                 @csrf
                 @method('DELETE')
                 <button class="btn btn-light" type="submit">CLEAR CART</button>
             </form>
+          </div>
+          <div>
+              @if(Session::has('success'))
+                <p class="text-success">{{Session::get('success')}}</p>
+              @elseif(Session::has('error'))
+                <p class="text-danger">{{Session::get('error')}}</p>
+              @endif
           </div>
         </div>
         <div class="shopping-cart__totals-wrapper">
