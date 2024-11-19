@@ -403,8 +403,12 @@
                                                     <img src="images/avatar/user-1.png" alt="">
                                                 </span>
                                                 <span class="flex flex-column">
-                                                    <span class="body-title mb-2">Kristin Watson</span>
-                                                    <span class="text-tiny">Admin</span>
+                                                    {{-- <span class="body-title mb-2">Kristin Watson</span> --}}
+                                                    <!-- Hiển thị email admin đăng nhập -->
+                                                    <span class="body-title mb-2">{{ Auth::user()->email }}</span>
+                                                    {{-- <span class="text-tiny">Admin</span> --}}
+                                                     <!-- Hiển thị tên admin đăng nhập -->
+                                                    <span class="text-tiny">{{ Auth::user()->name }}</span>
                                                 </span>
                                             </span>
                                         </button>
@@ -444,13 +448,17 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="login.html" class="user-item">
-                                                    <div class="icon">
-                                                        <i class="icon-log-out"></i>
-                                                    </div>
-                                                    <div class="body-title-2">Log out</div>
-                                                </a>
+                                                <form method="POST" action="{{ route('logout') }}" id="logout-form">
+                                                    @csrf
+                                                    <a href="{{ route('logout') }}" class="user-item" onclick="event.preventDefault();document.getElementById('logout-form').submit()">
+                                                        <div class="icon">
+                                                            <i class="icon-log-out"></i>
+                                                        </div>
+                                                        <div class="body-title-2">Log out</div>
+                                                    </a>
+                                                </form>
                                             </li>
+                                            
                                         </ul>
                                     </div>
                                 </div>
