@@ -116,6 +116,12 @@
               </div>
             </div>
             @endif
+             <!-- BACK TO CART Button -->
+            <div class="mobile_fixed-btn_wrapper">
+                <div class="button-wrapper container">
+                <a href="{{ route('cart.index') }}" class="btn btn-primary btn-checkout">BACK TO CART</a>
+                </div>
+            </div>
           </div>
           <div class="checkout__totals-wrapper">
             <div class="sticky-content">
