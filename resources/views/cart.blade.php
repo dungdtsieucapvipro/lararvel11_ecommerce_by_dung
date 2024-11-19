@@ -54,18 +54,23 @@
               <tr>
                 <td>
                   <div class="shopping-cart__product-item">
-                    <img loading="lazy" src="{{asset('uploads/products/thumbnails')}}/{{$item->model->image}}" width="120" height="120" alt="{{$item->name}}" />
+                    <a href="{{ route('shop.product.details', ['product_slug' => $item->model->slug]) }}">
+                      <img loading="lazy" src="{{ asset('uploads/products/thumbnails') }}/{{ $item->model->image }}" width="120" height="120" alt="{{ $item->name }}" />
+                    </a>
                   </div>
                 </td>
                 <td>
                   <div class="shopping-cart__product-item__detail">
-                    <h4>{{$item->name}}</h4>
+                    <a href="{{ route('shop.product.details', ['product_slug' => $item->model->slug]) }}">
+                      <h4>{{ $item->name }}</h4>
+                    </a>
                     <ul class="shopping-cart__product-item__options">
                       <li>Color: Yellow</li>
                       <li>Size: L</li>
                     </ul>
                   </div>
                 </td>
+                
                 <td>
                   <span class="shopping-cart__product-price">${{$item->price}}</span>
                 </td>
