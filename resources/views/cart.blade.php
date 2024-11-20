@@ -110,7 +110,7 @@
               @endforeach
             </tbody>
           </table>
-          <div class="cart-table-footer">
+          {{-- <div class="cart-table-footer">
 
             @if(!Session::has("coupon"))
               <form action="{{route('cart.coupon.apply')}}" method="POST" class="position-relative bg-body">
@@ -132,7 +132,36 @@
                 @method('DELETE')
                 <button class="btn btn-light" type="submit">CLEAR CART</button>
             </form>
+          </div> --}}
+          <div class="cart-table-footer">
+            @if(!Session::has("coupon"))
+                <form action="{{route('cart.coupon.apply')}}" method="POST" class="position-relative bg-body">
+                    @csrf                        
+                    <input class="form-control" type="text" name="coupon_code" placeholder="Coupon Code" value="">
+                    <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit" value="APPLY COUPON">
+                </form>
+            @else
+                <form action="{{route("cart.coupon.remove")}}" method="POST" class="position-relative bg-body">
+                    @csrf  
+                    @method('DELETE')                      
+                    <input class="form-control" type="text" name="coupon_code" placeholder="Coupon Code" value="@if(Session::has('coupon')) {{Session::get('coupon')['code']}} Applied! @endif">
+                    <input class="btn-link fw-medium position-absolute top-0 end-0 h-100 px-4" type="submit" value="REMOVE COUPON">
+                </form>
+            @endif
+        
+              <div class="d-flex justify-content-between align-items-center btn-checkout">
+                  <!-- Nút KEEP SHOPPING -->
+                  <a href="{{ route('shop.index') }}" class="btn btn-secondary">KEEP SHOPPING</a>
+          
+                  <!-- Nút CLEAR CART -->
+                  <form action="{{route('cart.empty')}}" method="POST" class="ms-3">
+                      @csrf
+                      @method('DELETE')
+                      <button class="btn btn-light" type="submit">CLEAR CART</button>
+                  </form>
+              </div>
           </div>
+          
           <div>
               @if(Session::has('success'))
                 <p class="text-success">{{Session::get('success')}}</p>
