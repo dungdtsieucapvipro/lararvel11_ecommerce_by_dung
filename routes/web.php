@@ -53,6 +53,7 @@ Route::get('/search', [HomeController::class, 'search'])->name('home.search');
 
 Route::get('/about', [HomeController::class, 'about'])->name('home.about');
 
+Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('home.privacy.policy');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/account-dashboard', [UserController::class, 'index'])->name('user.index');
