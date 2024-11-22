@@ -219,7 +219,7 @@
 
       <div class="mb-3 mb-xl-5 pt-1 pb-4"></div>
 
-      <section class="category-banner container">
+      {{-- <section class="category-banner container">
         <div class="row">
           <div class="col-md-6">
             <div class="category-banner__item border-radius-10 mb-5">
@@ -248,7 +248,7 @@
             </div>
           </div>
         </div>
-      </section>
+      </section> --}}
 
       <div class="mb-3 mb-xl-5 pt-1 pb-4"></div>
 

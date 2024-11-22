@@ -60,4 +60,9 @@ class HomeController extends Controller
     {
         return view('privacy_policy');
     }
+
+    public function termsConditions()
+    {
+        return view('terms_conditions');
+    }
 }

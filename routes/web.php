@@ -55,6 +55,9 @@ Route::get('/about', [HomeController::class, 'about'])->name('home.about');
 
 Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('home.privacy.policy');
 
+Route::get('/terms-conditions', [HomeController::class, 'termsConditions'])->name('home.terms.conditions');
+
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/account-dashboard', [UserController::class, 'index'])->name('user.index');
     Route::get('/account-orders', [UserController::class, 'orders'])->name('user.orders');

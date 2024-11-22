@@ -619,11 +619,18 @@
         <div class="footer-column footer-menu mb-4 mb-lg-0">
           <h6 class="sub-menu__title text-uppercase">Categories</h6>
           <ul class="sub-menu__list list-unstyled">
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Shirts</a></li>
+            @foreach ($categories as $category)
+            <li class="sub-menu__item">
+                <a href="{{ route('shop.index', ['categories' => $category->id]) }}" class="menu-link menu-link_us-s">
+                    {{ $category->name }}
+                </a>
+            </li>
+            @endforeach
+            {{-- <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Shirts</a></li>
             <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Jeans</a></li>
             <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Shoes</a></li>
             <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Bags</a></li>
-            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Shop All</a></li>
+            <li class="sub-menu__item"><a href="#" class="menu-link menu-link_us-s">Shop All</a></li> --}}
           </ul>
         </div>
       </div>
@@ -633,7 +640,7 @@
       <div class="container d-md-flex align-items-center">
         <span class="footer-copyright me-auto">©2024 Surfside Media</span>
         <div class="footer-settings d-md-flex align-items-center">
-          <a href="{{route('home.privacy.policy')}}">Privacy Policy</a> &nbsp;|&nbsp; <a href="terms-conditions.html">Terms &amp;
+          <a href="{{route('home.privacy.policy')}}">Privacy Policy</a> &nbsp;|&nbsp; <a href="{{route('home.terms.conditions')}}">Terms &amp;
             Conditions</a>
         </div>
       </div>
