@@ -50,4 +50,9 @@ class HomeController extends Controller
         $results = Product::where('name', 'LIKE', "%{$query}%")->get()->take(8);
         return response()->json($results);
     }
+
+    public function about()
+    {
+        return view('about');
+    }
 }
