@@ -217,7 +217,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($orders as $order)
+                                {{-- @foreach ($orders as $order) --}}
+                                @foreach ($orders->take(3) as $order)
                                 <tr>
                                     <td class="text-center">{{$order->id}}</td>
                                     <td class="text-center">{{$order->name}}</td>
