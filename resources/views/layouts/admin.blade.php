@@ -152,6 +152,13 @@
                                 </li>
 
                                 <li class="menu-item">
+                                    <a href="{{route('admin.contacts')}}" class="">
+                                        <div class="icon"><i class="icon-mail"></i></div>
+                                        <div class="text">Message</div>
+                                    </a>
+                                </li>
+
+                                <li class="menu-item">
                                     <a href="users.html" class="">
                                         <div class="icon"><i class="icon-user"></i></div>
                                         <div class="text">User</div>
@@ -485,7 +492,7 @@
     <script src="{{asset('js/sweetalert.min.js')}}"></script>    
     <script src="{{asset('js/apexcharts/apexcharts.js')}}"></script>
     <script src="{{asset('js/main.js')}}"></script>
-    <script>
+    {{-- <script>
         (function ($) {
 
             var tfLineChart = (function () {
@@ -582,7 +589,7 @@
 
             jQuery(window).on("resize", function () { });
         })(jQuery);
-    </script>
+    </script> --}}
     @stack("scripts")
 </body>
     
