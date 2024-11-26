@@ -225,43 +225,89 @@ class CartController extends Controller
     //     ]);
     // }
 
+    // public function calculateDiscounts()
+    // {
+    //     $discount = 0;
+
+    //     // Kiểm tra nếu có mã giảm giá trong session
+    //     if (session()->has('coupon')) {
+    //         if (Session::get('coupon')['type'] == 'fixed') {
+    //             $discount = floatval(Session::get('coupon')['value']);
+    //         } else {
+    //             $subtotal = floatval(str_replace(',', '', Cart::instance('cart')->subtotal()));
+    //             $discount = ($subtotal * floatval(Session::get('coupon')['value'])) / 100;
+    //         }
+    //     }
+
+    //     // Tính toán lại giá trị sau khi giảm giá
+    //     $subtotal = floatval(str_replace(',', '', Cart::instance('cart')->subtotal()));
+    //     $subtotalAfterDiscount = $subtotal - $discount;
+    //     $taxAfterDiscount = ($subtotalAfterDiscount * config('cart.tax')) / 100;
+    //     $totalAfterDiscount = $subtotalAfterDiscount + $taxAfterDiscount;
+
+    //     // Lưu lại các giá trị vào session
+    //     Session::put('discounts', [
+    //         'discount' => number_format(floatval($discount), 2, '.', ''),
+    //         'subtotal' => number_format(floatval($subtotalAfterDiscount), 2, '.', ''),
+    //         'tax' => number_format(floatval($taxAfterDiscount), 2, '.', ''),
+    //         'total' => number_format(floatval($totalAfterDiscount), 2, '.', ''),
+    //     ]);
+    // }
+
     public function calculateDiscounts()
     {
         $discount = 0;
 
         // Kiểm tra nếu có mã giảm giá trong session
         if (session()->has('coupon')) {
-            if (Session::get('coupon')['type'] == 'fixed') {
-                $discount = floatval(Session::get('coupon')['value']);
+            $coupon = Session::get('coupon');
+            if ($coupon['type'] === 'fixed') {
+                $discount = floatval($coupon['value']);
             } else {
                 $subtotal = floatval(str_replace(',', '', Cart::instance('cart')->subtotal()));
-                $discount = ($subtotal * floatval(Session::get('coupon')['value'])) / 100;
+                $discount = ($subtotal * floatval($coupon['value'])) / 100;
             }
         }
 
-        // Tính toán lại giá trị sau khi giảm giá
+        // Tính toán lại các giá trị
         $subtotal = floatval(str_replace(',', '', Cart::instance('cart')->subtotal()));
-        $subtotalAfterDiscount = $subtotal - $discount;
-        $taxAfterDiscount = ($subtotalAfterDiscount * config('cart.tax')) / 100;
+        $subtotalAfterDiscount = max($subtotal - $discount, 0);
+        $taxRate = config('cart.tax', 15); // Thuế mặc định là 15%
+        $taxAfterDiscount = ($subtotalAfterDiscount * $taxRate) / 100;
         $totalAfterDiscount = $subtotalAfterDiscount + $taxAfterDiscount;
 
-        // Lưu lại các giá trị vào session
-        Session::put('discounts', [
-            'discount' => number_format(floatval($discount), 2, '.', ''),
-            'subtotal' => number_format(floatval($subtotalAfterDiscount), 2, '.', ''),
-            'tax' => number_format(floatval($taxAfterDiscount), 2, '.', ''),
-            'total' => number_format(floatval($totalAfterDiscount), 2, '.', ''),
+        // Lưu lại các giá trị vào session 'checkout'
+        Session::put('checkout', [
+            'discount' => round($discount, 2),
+            'subtotal' => round($subtotal, 2),
+            'subtotalAfterDiscount' => round($subtotalAfterDiscount, 2),
+            'tax' => round($taxAfterDiscount, 2),
+            'total' => round($totalAfterDiscount, 2),
         ]);
     }
 
 
 
+
+    // public function remove_coupon_code()
+    // {
+    //     Session::forget('coupon');
+    //     Session::forget('discounts');
+    //     return back()->with('success', 'Coupon has been removed!');
+    // }
+
     public function remove_coupon_code()
     {
+        // Xóa mã giảm giá khỏi session
         Session::forget('coupon');
-        Session::forget('discounts');
+        Session::forget('checkout'); // Xóa dữ liệu cũ của checkout để tính toán lại.
+
+        // Tính toán lại giá trị giỏ hàng mà không có mã giảm giá
+        $this->setAmountforCheckout();
+
         return back()->with('success', 'Coupon has been removed!');
     }
+
 
     public function checkout()
     {
@@ -353,12 +399,107 @@ class CartController extends Controller
     //     // return view('order-confirmation',compact('order'));
     //     return redirect()->route('cart.order.confirmation');
     // }
+    // public function place_an_order(Request $request)
+    // {
+    //     $user_id = Auth::user()->id;
+
+    //     // Lấy địa chỉ mặc định
+    //     $address = Address::where('user_id', $user_id)->where('isdefault', true)->first();
+    //     if (!$address) {
+    //         $request->validate([
+    //             'name' => 'required|max:100',
+    //             'phone' => 'required|numeric|digits:10',
+    //             'zip' => 'required|numeric|digits:6',
+    //             'state' => 'required',
+    //             'city' => 'required',
+    //             'address' => 'required',
+    //             'locality' => 'required',
+    //             'landmark' => 'required',
+    //         ]);
+
+    //         $address = new Address();
+    //         $address->name = $request->name;
+    //         $address->phone = $request->phone;
+    //         $address->zip = $request->zip;
+    //         $address->state = $request->state;
+    //         $address->city = $request->city;
+    //         $address->address = $request->address;
+    //         $address->locality = $request->locality;
+    //         $address->landmark = $request->landmark;
+    //         $address->country = 'Vietnam';
+    //         $address->user_id = $user_id;
+    //         $address->isdefault = true;
+    //         $address->save();
+    //     }
+
+    //     // Thiết lập dữ liệu từ session
+    //     $subtotal = floatval(str_replace(',', '', Session::get('checkout')['subtotal'] ?? 0));
+    //     $discount = floatval(str_replace(',', '', Session::get('checkout')['discount'] ?? 0));
+    //     $tax = floatval(str_replace(',', '', Session::get('checkout')['tax'] ?? 0));
+    //     $total = floatval(str_replace(',', '', Session::get('checkout')['total'] ?? 0));
+
+    //     // Lưu order
+    //     $order = new Order();
+    //     $order->user_id = $user_id;
+    //     $order->subtotal = $subtotal;
+    //     $order->discount = $discount;
+    //     $order->tax = $tax;
+    //     $order->total = $total;
+    //     $order->name = $address->name;
+    //     $order->phone = $address->phone;
+    //     $order->locality = $address->locality;
+    //     $order->address = $address->address;
+    //     $order->city = $address->city;
+    //     $order->state = $address->state;
+    //     $order->country = $address->country;
+    //     $order->landmark = $address->landmark;
+    //     $order->zip = $address->zip;
+    //     $order->save();
+
+    //     // Lưu các sản phẩm trong giỏ hàng vào order items
+    //     foreach (Cart::instance('cart')->content() as $item) {
+    //         $orderItem = new OrderItem();
+    //         $orderItem->product_id = $item->id;
+    //         $orderItem->order_id = $order->id;
+    //         $orderItem->price = $item->price;
+    //         $orderItem->quantity = $item->qty;
+    //         $orderItem->save();
+    //     }
+
+    //     // Xử lý thanh toán (nếu có)
+    //     if ($request->mode == "cod") {
+    //         $transaction = new Transaction();
+    //         $transaction->user_id = $user_id;
+    //         $transaction->order_id = $order->id;
+    //         $transaction->mode = $request->mode;
+    //         $transaction->status = "pending";
+    //         $transaction->save();
+    //     }
+
+    //     // Xóa giỏ hàng và session
+    //     Cart::instance('cart')->destroy();
+    //     Session::forget('checkout');
+    //     Session::forget('coupon');
+    //     Session::forget('discounts');
+
+    //     // Chuyển hướng
+    //     Session::put('order_id', $order->id);
+    //     return redirect()->route('cart.order.confirmation');
+    // }
+
     public function place_an_order(Request $request)
     {
+        // Xác nhận người dùng đã đăng nhập
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Please log in to place your order.');
+        }
+
         $user_id = Auth::user()->id;
 
-        // Lấy địa chỉ mặc định
+        // Lấy địa chỉ mặc định của người dùng
         $address = Address::where('user_id', $user_id)->where('isdefault', true)->first();
+
+        // Nếu không có địa chỉ mặc định, yêu cầu người dùng cung cấp thông tin
         if (!$address) {
             $request->validate([
                 'name' => 'required|max:100',
@@ -368,9 +509,10 @@ class CartController extends Controller
                 'city' => 'required',
                 'address' => 'required',
                 'locality' => 'required',
-                'landmark' => 'required',
+                'landmark' => 'nullable',
             ]);
 
+            // Lưu địa chỉ mới
             $address = new Address();
             $address->name = $request->name;
             $address->phone = $request->phone;
@@ -380,19 +522,29 @@ class CartController extends Controller
             $address->address = $request->address;
             $address->locality = $request->locality;
             $address->landmark = $request->landmark;
-            $address->country = 'Vietnam';
+            $address->country = 'Vietnam'; // Giá trị mặc định
             $address->user_id = $user_id;
             $address->isdefault = true;
             $address->save();
         }
 
-        // Thiết lập dữ liệu từ session
-        $subtotal = floatval(str_replace(',', '', Session::get('checkout')['subtotal'] ?? 0));
-        $discount = floatval(str_replace(',', '', Session::get('checkout')['discount'] ?? 0));
-        $tax = floatval(str_replace(',', '', Session::get('checkout')['tax'] ?? 0));
-        $total = floatval(str_replace(',', '', Session::get('checkout')['total'] ?? 0));
+        // Kiểm tra và lấy dữ liệu từ session 'checkout'
+        if (!Session::has('checkout')) {
+            return redirect()->back()->with('error', 'Checkout session is missing. Please try again.');
+        }
 
-        // Lưu order
+        $checkoutData = Session::get('checkout');
+        $subtotal = floatval($checkoutData['subtotal'] ?? 0);
+        $discount = floatval($checkoutData['discount'] ?? 0);
+        $tax = floatval($checkoutData['tax'] ?? 0);
+        $total = floatval($checkoutData['total'] ?? 0);
+
+        // Kiểm tra tính hợp lệ của dữ liệu
+        if ($subtotal <= 0 || $total <= 0) {
+            return redirect()->back()->with('error', 'Invalid order amount. Please check your cart.');
+        }
+
+        // Lưu thông tin đơn hàng vào bảng orders
         $order = new Order();
         $order->user_id = $user_id;
         $order->subtotal = $subtotal;
@@ -410,7 +562,7 @@ class CartController extends Controller
         $order->zip = $address->zip;
         $order->save();
 
-        // Lưu các sản phẩm trong giỏ hàng vào order items
+        // Lưu thông tin các sản phẩm trong giỏ hàng vào bảng order_items
         foreach (Cart::instance('cart')->content() as $item) {
             $orderItem = new OrderItem();
             $orderItem->product_id = $item->id;
@@ -420,26 +572,29 @@ class CartController extends Controller
             $orderItem->save();
         }
 
-        // Xử lý thanh toán (nếu có)
-        if ($request->mode == "cod") {
+        // Lưu thông tin giao dịch (transaction)
+        if ($request->mode === 'cod') {
             $transaction = new Transaction();
             $transaction->user_id = $user_id;
             $transaction->order_id = $order->id;
             $transaction->mode = $request->mode;
-            $transaction->status = "pending";
+            $transaction->status = "pending"; // Mặc định trạng thái ban đầu
             $transaction->save();
         }
 
-        // Xóa giỏ hàng và session
+        // Dọn sạch giỏ hàng và session sau khi đặt hàng thành công
         Cart::instance('cart')->destroy();
         Session::forget('checkout');
         Session::forget('coupon');
         Session::forget('discounts');
 
-        // Chuyển hướng
+        // Lưu order_id vào session để hiển thị trang xác nhận
         Session::put('order_id', $order->id);
-        return redirect()->route('cart.order.confirmation');
+
+        // Chuyển hướng đến trang xác nhận đơn hàng
+        return redirect()->route('cart.order.confirmation')->with('success', 'Your order has been placed successfully!');
     }
+
 
 
     // public function setAmountforCheckout()
@@ -546,6 +701,59 @@ class CartController extends Controller
     //     }
     // }
 
+    // public function setAmountforCheckout()
+    // {
+    //     if (!Cart::instance('cart')->content()->count() > 0) {
+    //         Session::forget('checkout');
+    //         return;
+    //     }
+
+    //     $subtotal = floatval(str_replace(',', '', Cart::instance('cart')->subtotal()));
+
+    //     // Nếu có mã giảm giá
+    //     if (Session::has('coupon')) {
+    //         $coupon = Session::get('coupon');
+    //         $discount = 0;
+
+    //         // Tính giá trị giảm giá
+    //         if ($coupon['type'] == 'fixed') {
+    //             $discount = floatval($coupon['value']);
+    //         } else {
+    //             $discount = ($subtotal * floatval($coupon['value'])) / 100;
+    //         }
+
+    //         $subtotalAfterDiscount = max($subtotal - $discount, 0);
+
+    //         $taxRate = config('cart.tax') ?? 15; // Mặc định thuế 15%
+    //         $taxAfterDiscount = ($subtotalAfterDiscount * $taxRate) / 100;
+
+    //         $totalAfterDiscount = $subtotalAfterDiscount + $taxAfterDiscount;
+
+    //         // Lưu vào session
+    //         Session::put('checkout', [
+    //             'discount' => round($discount, 2),
+    //             'subtotal' => round($subtotal, 2),
+    //             'subtotalAfterDiscount' => round($subtotalAfterDiscount, 2),
+    //             'tax' => round($taxAfterDiscount, 2),
+    //             'total' => round($totalAfterDiscount, 2),
+    //         ]);
+    //     } else {
+    //         // Không có mã giảm giá
+    //         $taxRate = config('cart.tax') ?? 15; // Mặc định thuế 15%
+    //         $tax = ($subtotal * $taxRate) / 100;
+    //         $total = $subtotal + $tax;
+
+    //         // Lưu vào session
+    //         Session::put('checkout', [
+    //             'discount' => 0,
+    //             'subtotal' => round($subtotal, 2),
+    //             'subtotalAfterDiscount' => round($subtotal, 2),
+    //             'tax' => round($tax, 2),
+    //             'total' => round($total, 2),
+    //         ]);
+    //     }
+    // }
+
     public function setAmountforCheckout()
     {
         if (!Cart::instance('cart')->content()->count() > 0) {
@@ -555,49 +763,20 @@ class CartController extends Controller
 
         $subtotal = floatval(str_replace(',', '', Cart::instance('cart')->subtotal()));
 
-        // Nếu có mã giảm giá
-        if (Session::has('coupon')) {
-            $coupon = Session::get('coupon');
-            $discount = 0;
+        $taxRate = config('cart.tax') ?? 15; // Thuế mặc định là 15%
+        $tax = ($subtotal * $taxRate) / 100;
+        $total = $subtotal + $tax;
 
-            // Tính giá trị giảm giá
-            if ($coupon['type'] == 'fixed') {
-                $discount = floatval($coupon['value']);
-            } else {
-                $discount = ($subtotal * floatval($coupon['value'])) / 100;
-            }
-
-            $subtotalAfterDiscount = max($subtotal - $discount, 0);
-
-            $taxRate = config('cart.tax') ?? 15; // Mặc định thuế 15%
-            $taxAfterDiscount = ($subtotalAfterDiscount * $taxRate) / 100;
-
-            $totalAfterDiscount = $subtotalAfterDiscount + $taxAfterDiscount;
-
-            // Lưu vào session
-            Session::put('checkout', [
-                'discount' => round($discount, 2),
-                'subtotal' => round($subtotal, 2),
-                'subtotalAfterDiscount' => round($subtotalAfterDiscount, 2),
-                'tax' => round($taxAfterDiscount, 2),
-                'total' => round($totalAfterDiscount, 2),
-            ]);
-        } else {
-            // Không có mã giảm giá
-            $taxRate = config('cart.tax') ?? 15; // Mặc định thuế 15%
-            $tax = ($subtotal * $taxRate) / 100;
-            $total = $subtotal + $tax;
-
-            // Lưu vào session
-            Session::put('checkout', [
-                'discount' => 0,
-                'subtotal' => round($subtotal, 2),
-                'subtotalAfterDiscount' => round($subtotal, 2),
-                'tax' => round($tax, 2),
-                'total' => round($total, 2),
-            ]);
-        }
+        // Lưu vào session 'checkout'
+        Session::put('checkout', [
+            'discount' => 0, // Không có giảm giá
+            'subtotal' => round($subtotal, 2),
+            'subtotalAfterDiscount' => round($subtotal, 2),
+            'tax' => round($tax, 2),
+            'total' => round($total, 2),
+        ]);
     }
+
 
 
 

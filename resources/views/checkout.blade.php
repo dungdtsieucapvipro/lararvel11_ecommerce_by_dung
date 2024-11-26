@@ -129,77 +129,81 @@
               <div class="checkout__totals">
                 <h3>Your Order</h3>
                 <table class="checkout-cart-items">
-                  <thead>
-                    <tr>
-                      <th>PRODUCT</th>
-                      <th align="right">SUBTOTAL</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach (Cart::instance('cart')->content() as $item)
-                    <tr>
-                      <td>
-                        {{$item->name}} x {{$item->qty}}
-                      </td>
-                      <td align="right">
-                        ${{$item->subtotal}}
-                      </td>
-                    </tr>
-                    @endforeach
-                  </tbody>
+                    <thead>
+                        <tr>
+                            <th>PRODUCT</th>
+                            <th align="right">SUBTOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Cart::instance('cart')->content() as $item)
+                        <tr>
+                            <td>
+                                {{$item->name}} x {{$item->qty}}
+                            </td>
+                            <td align="right">
+                                ${{ number_format($item->price * $item->qty, 2) }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
                 </table>
-                @if(Session::has('discounts'))
+            
+                @if(Session::has('checkout'))
                 <table class="checkout-totals">
                     <tbody>
                         <tr>
-                          <th>Subtotal</th>
-                          <td class="text-right">${{Cart::instance('cart')->subtotal()}}</td>
+                            <th>Subtotal</th>
+                            <td class="text-right">${{ number_format(Session::get('checkout')['subtotal'], 2) }}</td>
+                        </tr>
+                        @if(Session::has('coupon'))
+                        <tr>
+                            <th>Discount ({{ Session::get('coupon')['code'] }})</th>
+                            <td class="text-right">-${{ number_format(Session::get('checkout')['discount'], 2) }}</td>
                         </tr>
                         <tr>
-                          <th>Discount {{Session::get('coupon')['code']}}</th>
-                          <td class="text-right">-${{Session::get('discounts')['discount']}}</td>
+                            <th>Subtotal After Discount</th>
+                            <td class="text-right">${{ number_format(Session::get('checkout')['subtotalAfterDiscount'], 2) }}</td>
+                        </tr>
+                        @endif
+                        <tr>
+                            <th>Shipping</th>
+                            <td class="text-right">Free</td>
                         </tr>
                         <tr>
-                          <th>Subtotal After Discount</th>
-                          <td class="text-right">${{Session::get('discounts')['subtotal']}}</td>
+                            <th>VAT</th>
+                            <td class="text-right">${{ number_format(Session::get('checkout')['tax'], 2) }}</td>
                         </tr>
                         <tr>
-                          <th>Shipping</th>
-                          <td class="text-right">Free</td>
+                            <th>Total</th>
+                            <td class="text-right">${{ number_format(Session::get('checkout')['total'], 2) }}</td>
                         </tr>
-                        <tr>
-                          <th>VAT</th>
-                          <td class="text-right">${{Session::get('discounts')['tax']}}</td>
-                        </tr>
-                        <tr>
-                          <th>Total</th>
-                          <td class="text-right">${{Session::get('discounts')['total']}}</td>
-                        </tr>
-                      </tbody>
+                    </tbody>
                 </table>
                 @else
                 <table class="checkout-totals">
-                  <tbody>
-                    <tr>
-                      <th>SUBTOTAL</th>
-                      <td class="text-right">${{Cart::instance('cart')->subtotal()}}</td>
-                    </tr>
-                    <tr>
-                      <th>SHIPPING</th>
-                      <td class="text-right">Free shipping</td>
-                    </tr>
-                    <tr>
-                      <th>VAT</th>
-                      <td class="text-right">${{Cart::instance('cart')->tax()}}</td>
-                    </tr>
-                    <tr>
-                      <th>TOTAL</th>
-                      <td class="text-right">${{Cart::instance('cart')->total()}}</td>
-                    </tr>
-                  </tbody>
+                    <tbody>
+                        <tr>
+                            <th>Subtotal</th>
+                            <td class="text-right">${{ number_format(Cart::instance('cart')->subtotal(), 2) }}</td>
+                        </tr>
+                        <tr>
+                            <th>Shipping</th>
+                            <td class="text-right">Free</td>
+                        </tr>
+                        <tr>
+                            <th>VAT</th>
+                            <td class="text-right">${{ number_format(Cart::instance('cart')->tax(), 2) }}</td>
+                        </tr>
+                        <tr>
+                            <th>Total</th>
+                            <td class="text-right">${{ number_format(Cart::instance('cart')->total(), 2) }}</td>
+                        </tr>
+                    </tbody>
                 </table>
                 @endif
-              </div>
+            </div>
+            
               <div class="checkout__payment-methods">
 
                 <div class="form-check">

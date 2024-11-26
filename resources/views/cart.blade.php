@@ -174,59 +174,61 @@
           <div class="sticky-content">
             <div class="shopping-cart__totals">
               <h3>Cart Totals</h3>
-              @if(Session::has('discounts'))
+              @if(Session::has('checkout'))
               <table class="cart-totals">
-                <tbody>
-                  <tr>
-                    <th>Subtotal</th>
-                    <td>${{Cart::instance('cart')->subtotal()}}</td>
-                  </tr>
-                  <tr>
-                    <th>Discount {{Session::get('coupon')['code']}}</th>
-                    <td>-${{Session::get('discounts')['discount']}}</td>
-                  </tr>
-                  <tr>
-                    <th>Subtotal After Discount</th>
-                    <td>${{Session::get('discounts')['subtotal']}}</td>
-                  </tr>
-                  <tr>
-                    <th>Shipping</th>
-                    <td>Free</td>
-                  </tr>
-                  <tr>
-                    <th>VAT</th>
-                    <td>${{Session::get('discounts')['tax']}}</td>
-                  </tr>
-                  <tr>
-                    <th>Total</th>
-                    <td>${{Session::get('discounts')['total']}}</td>
-                  </tr>
-                </tbody>
+                  <tbody>
+                      <tr>
+                          <th>Subtotal</th>
+                          <td>${{ number_format(Session::get('checkout')['subtotal'], 2) }}</td>
+                      </tr>
+                      @if(Session::has('coupon'))
+                      <tr>
+                          <th>Discount ({{ Session::get('coupon')['code'] }})</th>
+                          <td>-${{ number_format(Session::get('checkout')['discount'], 2) }}</td>
+                      </tr>
+                      <tr>
+                          <th>Subtotal After Discount</th>
+                          <td>${{ number_format(Session::get('checkout')['subtotalAfterDiscount'], 2) }}</td>
+                      </tr>
+                      @endif
+                      <tr>
+                          <th>Shipping</th>
+                          <td>Free</td>
+                      </tr>
+                      <tr>
+                          <th>VAT</th>
+                          <td>${{ number_format(Session::get('checkout')['tax'], 2) }}</td>
+                      </tr>
+                      <tr>
+                          <th>Total</th>
+                          <td>${{ number_format(Session::get('checkout')['total'], 2) }}</td>
+                      </tr>
+                  </tbody>
               </table>
-
               @else
               <table class="cart-totals">
-                <tbody>
-                  <tr>
-                    <th>Subtotal</th>
-                    <td>${{Cart::instance('cart')->subtotal()}}</td>
-                  </tr>
-                  <tr>
-                    <th>Shipping</th>
-                    <td>Free</td>
-                  </tr>
-                  <tr>
-                    <th>VAT</th>
-                    <td>${{Cart::instance('cart')->tax()}}</td>
-                  </tr>
-                  <tr>
-                    <th>Total</th>
-                    <td>${{Cart::instance('cart')->total()}}</td>
-                  </tr>
-                </tbody>
+                  <tbody>
+                      <tr>
+                          <th>Subtotal</th>
+                          <td>${{ number_format(Cart::instance('cart')->subtotal(), 2) }}</td>
+                      </tr>
+                      <tr>
+                          <th>Shipping</th>
+                          <td>Free</td>
+                      </tr>
+                      <tr>
+                          <th>VAT</th>
+                          <td>${{ number_format(Cart::instance('cart')->tax(), 2) }}</td>
+                      </tr>
+                      <tr>
+                          <th>Total</th>
+                          <td>${{ number_format(Cart::instance('cart')->total(), 2) }}</td>
+                      </tr>
+                  </tbody>
               </table>
               @endif
-            </div>
+          </div>
+          
             <div class="mobile_fixed-btn_wrapper">
               <div class="button-wrapper container">
                 <a href="{{route('cart.checkout')}}" class="btn btn-primary btn-checkout">PROCEED TO CHECKOUT</a>
