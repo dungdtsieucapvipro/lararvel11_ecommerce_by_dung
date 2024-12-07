@@ -45,6 +45,12 @@
                     <a href="{{route ('register')}}" class="btn-text js-show-register">Create Account</a>
                 </div>
             </form>
+            <!-- Nút đăng nhập với Google -->
+            <div class="text-center mt-3">
+                <a href="{{ route('login.google') }}" class="btn btn-danger w-100">
+                    Login with Google
+                </a>
+            </div>
         </div>
         </div>
     </div>

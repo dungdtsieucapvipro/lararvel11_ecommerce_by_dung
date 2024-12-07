@@ -10,6 +10,7 @@ use App\Http\Middleware\AuthAdmin;
 use App\Models\Contact;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\GoogleController;
 
 
 
@@ -56,6 +57,9 @@ Route::get('/about', [HomeController::class, 'about'])->name('home.about');
 Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('home.privacy.policy');
 
 Route::get('/terms-conditions', [HomeController::class, 'termsConditions'])->name('home.terms.conditions');
+
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 
 Route::middleware(['auth'])->group(function () {
