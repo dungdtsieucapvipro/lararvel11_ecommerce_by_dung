@@ -496,11 +496,24 @@ class CartController extends Controller
 
         $user_id = Auth::user()->id;
 
-        // Lấy địa chỉ mặc định của người dùng
-        $address = Address::where('user_id', $user_id)->where('isdefault', true)->first();
+        // Kiểm tra và lấy dữ liệu từ session 'checkout'
+        if (!Session::has('checkout')) {
+            return redirect()->back()->with('error', 'Checkout session is missing. Please try again.');
+        }
 
-        // Nếu không có địa chỉ mặc định, yêu cầu người dùng cung cấp thông tin
-        if (!$address) {
+        $checkoutData = Session::get('checkout');
+        $subtotal = floatval($checkoutData['subtotal'] ?? 0);
+        $discount = floatval($checkoutData['discount'] ?? 0);
+        $tax = floatval($checkoutData['tax'] ?? 0);
+        $total = floatval($checkoutData['total'] ?? 0);
+
+        // Kiểm tra tính hợp lệ của dữ liệu
+        if ($subtotal <= 0 || $total <= 0) {
+            return redirect()->back()->with('error', 'Invalid order amount. Please check your cart.');
+        }
+
+        // Nếu không có địa chỉ, yêu cầu người dùng cung cấp thông tin
+        if ($request->has('name') && $request->has('phone') && $request->has('zip') && $request->has('state') && $request->has('city') && $request->has('address') && $request->has('locality')) {
             $request->validate([
                 'name' => 'required|max:100',
                 'phone' => 'required|numeric|digits:10',
@@ -526,22 +539,9 @@ class CartController extends Controller
             $address->user_id = $user_id;
             $address->isdefault = true;
             $address->save();
-        }
-
-        // Kiểm tra và lấy dữ liệu từ session 'checkout'
-        if (!Session::has('checkout')) {
-            return redirect()->back()->with('error', 'Checkout session is missing. Please try again.');
-        }
-
-        $checkoutData = Session::get('checkout');
-        $subtotal = floatval($checkoutData['subtotal'] ?? 0);
-        $discount = floatval($checkoutData['discount'] ?? 0);
-        $tax = floatval($checkoutData['tax'] ?? 0);
-        $total = floatval($checkoutData['total'] ?? 0);
-
-        // Kiểm tra tính hợp lệ của dữ liệu
-        if ($subtotal <= 0 || $total <= 0) {
-            return redirect()->back()->with('error', 'Invalid order amount. Please check your cart.');
+        } else {
+            // Nếu không có địa chỉ, trả về lỗi
+            return redirect()->back()->with('error', 'Please provide your shipping details.');
         }
 
         // Lưu thông tin đơn hàng vào bảng orders
@@ -594,6 +594,7 @@ class CartController extends Controller
         // Chuyển hướng đến trang xác nhận đơn hàng
         return redirect()->route('cart.order.confirmation')->with('success', 'Your order has been placed successfully!');
     }
+
 
 
 

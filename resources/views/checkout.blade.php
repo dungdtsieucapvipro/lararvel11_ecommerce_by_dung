@@ -38,26 +38,7 @@
               <div class="col-6">
               </div>
             </div>
-            @if($address)
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="my-account__address-list">
-                            <div class="my-account__address-item">
-                                <div class="my-account__address-item__detail">
-                                    <p>{{$address->name}}</p>
-                                    <p>{{$address->address}}</p>
-                                    <p>{{$address->landmark}}</p>
-                                    <p>{{$address->city}}, {{$address->state}}, {{$address->country}}</p>
-                                    <p>{{$address->zip}}</p>
-                                    <br/>
-                                    <p>{{$address->phone}}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            @else
+            <!-- Always show the address form, regardless of whether there is a saved address or not -->
             <div class="row mt-5">
               <div class="col-md-6">
                 <div class="form-floating my-3">
@@ -116,7 +97,6 @@
                 </div>
               </div>
             </div>
-            @endif
              <!-- BACK TO CART Button -->
             <div class="mobile_fixed-btn_wrapper">
                 <div class="button-wrapper container">
