@@ -114,4 +114,8 @@ Route::middleware(['auth', AuthAdmin::class])->group(function () {
     Route::delete('/admin/contact/{id}/delete', [AdminController::class, 'contact_delete'])->name('admin.contact.delete');
 
     Route::get('/admin/search', [AdminController::class, 'search'])->name('admin.search');
+
+    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::delete('admin/user/{id}/delete', [AdminController::class, 'user_delete'])->name('admin.user.delete');
+    Route::post('/admin/user/{id}/update-utype', [AdminController::class, 'user_update_utype'])->name('admin.user.updateutype');
 });

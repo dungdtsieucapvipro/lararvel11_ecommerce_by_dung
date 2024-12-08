@@ -11,6 +11,7 @@ use App\Models\OrderItem;
 use App\Models\Transaction;
 use App\Models\Product;
 use App\Models\Slide;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -768,5 +769,46 @@ class AdminController extends Controller
         $query = $request->input('query');
         $results = Product::where('name', 'LIKE', "%{$query}%")->get()->take(8);
         return response()->json($results);
+    }
+
+    public function users()
+    {
+        // Lấy danh sách người dùng và phân trang theo 10 người dùng mỗi trang
+        $users = User::orderBy('id', 'DESC')->paginate(10);
+
+        // Trả về view với danh sách người dùng
+        return view('admin.users', compact('users'));
+    }
+    public function user_delete($id)
+    {
+        $user  = User::find($id);
+
+        if ($user) {
+            $user->delete();
+            return redirect()->route('admin.users')->with('status', 'User has been deleted successfully');
+        }
+
+        return redirect()->route('admin.users')->with('error', 'User not found');
+    }
+
+    // Controller: AdminController.php
+
+    public function user_update_utype(Request $request, $id)
+    {
+        $user = User::find($id);
+
+        // Kiểm tra xem người dùng có tồn tại không
+        if (!$user) {
+            return redirect()->route('admin.users')->with('error', 'User not found');
+        }
+
+        // Lấy giá trị mới của utype từ form
+        $user->utype = $request->utype;
+
+        // Lưu cập nhật vào cơ sở dữ liệu
+        $user->save();
+
+        // Chuyển hướng về danh sách người dùng với thông báo thành công
+        return redirect()->route('admin.users')->with('status', 'User type has been updated successfully');
     }
 }
