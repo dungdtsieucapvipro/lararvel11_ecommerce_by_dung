@@ -304,11 +304,14 @@
         </a>
       </div>
 
-      <a href="#" class="header-tools__item header-tools__cart js-open-aside" data-aside="cartDrawer">
-        <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <a href="{{route('cart.index')}}" class="header-tools__item header-tools__cart">
+        <svg class="d-block" width="20" height="20" viewBox="0 0 20 20" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
           <use href="#icon_cart" />
         </svg>
-        <span class="cart-amount d-block position-absolute js-cart-items-count">3</span>
+        @if (Cart::instance('cart')->content()->count() > 0)
+          <span class="cart-amount d-block position-absolute js-cart-items-count">{{Cart::instance('cart')->content()->count()}}</span>
+        @endif
       </a>
     </div>
 
@@ -347,10 +350,10 @@
               <a href="{{route('cart.index')}}" class="navigation__link">Cart</a>
             </li>
             <li class="navigation__item">
-              <a href="about.html" class="navigation__link">About</a>
+              <a href="{{route('home.about')}}" class="navigation__link">About</a>
             </li>
             <li class="navigation__item">
-              <a href="contact.html" class="navigation__link">Contact</a>
+              <a href="{{route('home.contact')}}" class="navigation__link">Contact</a>
             </li>
           </ul>
         </div>
@@ -362,8 +365,15 @@
             xmlns="http://www.w3.org/2000/svg">
             <use href="#icon_user" />
           </svg>
-          <span class="d-inline-block ms-2 text-uppercase align-middle fw-medium">My Account</span>
+          @guest
+            <a href="{{route('login')}}" class="d-inline-block ms-2 text-uppercase align-middle fw-medium">Login</a>
+          @else
+            <a href="{{Auth::user()->utype === 'ADM' ? route('admin.index') : route('user.index')}}" class="d-inline-block ms-2 text-uppercase align-middle fw-medium">
+              <span>{{Auth::user()->name}}</span>
+            </a>
+          @endguest
         </div>
+        
 
 
 
@@ -532,13 +542,13 @@
               <img src="{{asset('assets/images/logo.png')}}" alt="SurfsideMedia" class="logo__image d-block" />
             </a>
           </div>
-          <p class="footer-address">123 Beach Avenue, Surfside City, CA 00000</p>
-          <p class="m-0"><strong class="fw-medium">contact@surfsidemedia.in</strong></p>
-          <p><strong class="fw-medium">+1 000-000-0000</strong></p>
+          <p class="footer-address">IT Department, QBU</p>
+          <p class="m-0"><strong class="fw-medium">sevensoderfive@gmail.com</strong></p>
+          <p><strong class="fw-medium">0232 3824 052</strong></p>
 
           <ul class="social-links list-unstyled d-flex flex-wrap mb-0">
             <li>
-              <a href="#" class="footer__social-link d-block">
+              <a href="https://www.facebook.com/haongtandung/" target="_blank" class="footer__social-link d-block">
                 <svg class="svg-icon svg-icon_facebook" width="9" height="15" viewBox="0 0 9 15"
                   xmlns="http://www.w3.org/2000/svg">
                   <use href="#icon_facebook" />
@@ -554,7 +564,7 @@
               </a>
             </li>
             <li>
-              <a href="#" class="footer__social-link d-block">
+              <a href="https://www.instagram.com/dungztrz_811/" target="_blank" class="footer__social-link d-block">
                 <svg class="svg-icon svg-icon_instagram" width="14" height="13" viewBox="0 0 14 13"
                   xmlns="http://www.w3.org/2000/svg">
                   <use href="#icon_instagram" />
@@ -562,7 +572,7 @@
               </a>
             </li>
             <li>
-              <a href="#" class="footer__social-link d-block">
+              <a href="https://www.youtube.com/@dunghoangtan4377" target="_blank" class="footer__social-link d-block">
                 <svg class="svg-icon svg-icon_youtube" width="16" height="11" viewBox="0 0 16 11"
                   xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -632,7 +642,7 @@
 
     <div class="footer-bottom">
       <div class="container d-md-flex align-items-center">
-        <span class="footer-copyright me-auto">©2024 Surfside Media</span>
+        <span class="footer-copyright me-auto">©2024 Hoang Dung</span>
         <div class="footer-settings d-md-flex align-items-center">
           <a href="{{route('home.privacy.policy')}}">Privacy Policy</a> &nbsp;|&nbsp; <a href="{{route('home.terms.conditions')}}">Terms &amp;
             Conditions</a>
@@ -655,7 +665,7 @@
       </div>
 
       <div class="col-4">
-        <a href="{{route('home.index')}}" class="footer-mobile__link d-flex flex-column align-items-center">
+        <a href="{{route('shop.index')}}" class="footer-mobile__link d-flex flex-column align-items-center">
           <svg class="d-block" width="18" height="18" viewBox="0 0 18 18" fill="none"
             xmlns="http://www.w3.org/2000/svg">
             <use href="#icon_hanger" />
@@ -665,13 +675,16 @@
       </div>
 
       <div class="col-4">
-        <a href="{{route('home.index')}}" class="footer-mobile__link d-flex flex-column align-items-center">
+        <a href="{{route('wishlist.index')}}" class="footer-mobile__link d-flex flex-column align-items-center">
           <div class="position-relative">
             <svg class="d-block" width="18" height="18" viewBox="0 0 20 20" fill="none"
               xmlns="http://www.w3.org/2000/svg">
               <use href="#icon_heart" />
             </svg>
-            <span class="wishlist-amount d-block position-absolute js-wishlist-count">3</span>
+            @if (Cart::instance('wishlist')->content()->count() > 0)
+              <span class="wishlist-amount d-block position-absolute js-wishlist-count">{{Cart::instance('wishlist')->content()->count()}}</span>
+            @endif
+            {{-- <span class="wishlist-amount d-block position-absolute js-wishlist-count">3</span> --}}
           </div>
           <span>Wishlist</span>
         </a>
