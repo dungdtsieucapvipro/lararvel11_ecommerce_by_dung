@@ -210,7 +210,8 @@
                   <tbody>
                       <tr>
                           <th>Subtotal</th>
-                          <td>${{ number_format(Cart::instance('cart')->subtotal(), 2) }}</td>
+                          <td>${{ number_format((float) Cart::instance('cart')->subtotal(), 2) }}</td>
+
                       </tr>
                       <tr>
                           <th>Shipping</th>
@@ -222,7 +223,7 @@
                       </tr>
                       <tr>
                           <th>Total</th>
-                          <td>${{ number_format(Cart::instance('cart')->total(), 2) }}</td>
+                          <td>${{ number_format((float) Cart::instance('cart')->total(), 2) }}</td>
                       </tr>
                   </tbody>
               </table>
