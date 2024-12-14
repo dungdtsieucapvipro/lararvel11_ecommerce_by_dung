@@ -15,6 +15,36 @@
   .filled-heart{
     color: orange;
   }
+  .added-to-cart-indicator {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; /* Sắp xếp theo chiều dọc */
+    background-color: #28a745; /* Màu xanh */
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    z-index: 5;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.added-to-cart-indicator .added-icon {
+    font-size: 18px; /* Kích thước biểu tượng tích */
+    font-weight: bold;
+    line-height: 1;
+}
+
+.added-to-cart-indicator .added-text {
+    font-size: 10px; /* Kích thước chữ */
+    margin-top: 3px; /* Khoảng cách giữa chữ và biểu tượng */
+    font-weight: normal;
+}
+
 </style>
 
 
@@ -339,6 +369,14 @@
           <div class="product-card-wrapper">
             <div class="product-card mb-3 mb-md-4 mb-xxl-5">
               <div class="pc__img-wrapper">
+                @if(Cart::instance('cart')->content()->where('id', $product->id)->count() > 0)
+                <div class="added-to-cart-indicator">
+                    <span class="added-icon">&#10003;</span>
+                    {{-- <span class="added-text">Added to Cart</span> --}}
+
+                </div>
+                @endif
+
                 <div class="swiper-container background-img js-swiper-slider" data-settings='{"resizeObserver": true}'>
                   <div class="swiper-wrapper">
                     <div class="swiper-slide">
